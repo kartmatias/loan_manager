@@ -1,0 +1,100 @@
+# ========================================
+# Global ignores
+# ========================================
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+*.swp
+.env
+.env.*
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pid
+*.seed
+*.bak
+*.orig
+
+# Virtual environments & Node modules
+venv/
+.env/
+.venv/
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+package-lock.json
+yarn.lock
+
+# IDE and editor folders
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ========================================
+# Backend - Python Flask (loan_manager_api)
+# ========================================
+loan_manager_api/__pycache__/
+loan_manager_api/*.pyc
+loan_manager_api/instance/
+loan_manager_api/.pytest_cache/
+loan_manager_api/.mypy_cache/
+loan_manager_api/.coverage
+loan_manager_api/htmlcov/
+loan_manager_api/.tox/
+loan_manager_api/.ruff_cache/
+loan_manager_api/.pytest_cache/
+loan_manager_api/migrations/
+
+# virtualenv (local to backend)
+loan_manager_api/venv/
+loan_manager_api/.env
+loan_manager_api/.env.*
+
+# Logs & runtime files
+loan_manager_api/logs/
+loan_manager_api/tmp/
+loan_manager_api/*.log
+
+# ========================================
+# Frontend - Node.js (loan_manager_app)
+# ========================================
+loan_manager_app/node_modules/
+loan_manager_app/dist/
+loan_manager_app/build/
+loan_manager_app/.env
+loan_manager_app/.env.*
+loan_manager_app/.cache/
+loan_manager_app/.nuxt/
+loan_manager_app/.next/
+loan_manager_app/.vercel/
+loan_manager_app/coverage/
+loan_manager_app/.eslintcache
+
+# Local files
+loan_manager_app/npm-debug.log*
+loan_manager_app/yarn-debug.log*
+loan_manager_app/yarn-error.log*
+loan_manager_app/pnpm-debug.log*
+loan_manager_app/package-lock.json
+loan_manager_app/yarn.lock
+
+# ========================================
+# OS and tooling
+# ========================================
+*.bak
+*.tmp
+*.swp
+*.swo
+*.orig
+*.seed
+*.pid
+*.log
+.cache/
+coverage/
+dist/
+build/
