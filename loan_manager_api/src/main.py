@@ -5,6 +5,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask, send_from_directory
 from flask_cors import CORS
+from flask_migrate import Migrate
 from src.models.user import db
 from src.models.client import Client
 from src.models.loan import Loan
@@ -32,8 +33,8 @@ app.register_blueprint(invoice_bp, url_prefix='/api')
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
-with app.app_context():
-    db.create_all()
+
+migrate = Migrate(app, db)
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
