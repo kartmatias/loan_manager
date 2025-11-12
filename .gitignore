@@ -16,6 +16,7 @@ __pycache__/
 *.seed
 *.bak
 *.orig
+*.zip
 
 # Virtual environments & Node modules
 venv/
