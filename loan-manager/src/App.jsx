@@ -10,7 +10,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('dashboard')
   
   // URL da API - em produção, usar variável de ambiente
-  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://192.168.1.14:5000'
 
   const renderContent = () => {
     switch (activeTab) {

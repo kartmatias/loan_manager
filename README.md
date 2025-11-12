@@ -7,8 +7,20 @@ Este é um aplicativo web mobile-first para gestão financeira de empréstimos d
 -   **Gestão de Clientes:** Adicionar, visualizar, editar e excluir clientes.
 -   **Gestão de Empréstimos:** Registrar novos empréstimos, com cálculo automático de parcelas, visualização de detalhes e status.
 -   **Gestão de Parcelas:** Registrar pagamentos de parcelas, adiantar parcelas e visualizar o status de cada parcela.
+-   **Emissão de Faturas por Parcela:** ⭐ **NOVO** - Gerar faturas individuais para cada parcela de empréstimo, permitindo controle granular de pagamentos.
 -   **Emissão de Faturas:** Gerar faturas para clientes, com detalhes de empréstimos e parcelas.
 -   **Dashboard:** Visão geral das estatísticas de empréstimos e clientes.
+
+## ⭐ Novidade: Faturas por Parcela
+
+O sistema foi refatorado para permitir a geração de faturas individuais para cada parcela de empréstimo. Isso proporciona:
+
+- **Controle Granular**: Registre pagamentos de cada parcela separadamente
+- **Histórico Completo**: Mantenha histórico de todas as faturas por parcela
+- **Flexibilidade**: Gere múltiplas faturas para a mesma parcela (renegociações)
+- **Rastreamento**: Acompanhe o status de pagamento de cada parcela individualmente
+
+Para mais detalhes sobre a refatoração, consulte o arquivo `REFATORACAO_FATURAS_POR_PARCELA.md`.
 
 ## Arquitetura
 
@@ -119,6 +131,7 @@ Agora, o aplicativo completo (frontend e backend) estará acessível via `http:/
     -   `GET /api/emprestimos/<emprestimo_id>/parcelas`
     -   `POST /api/parcelas/<id>/pagar`
     -   `POST /api/emprestimos/<emprestimo_id>/adiantar_parcelas`
+    -   `POST /api/parcelas/<id>/fatura` ⭐ **NOVO** - Gera fatura para parcela específica
 -   **Faturas:**
     -   `GET /api/faturas`
     -   `POST /api/faturas`

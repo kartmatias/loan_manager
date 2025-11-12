@@ -15,6 +15,9 @@ class Installment(db.Model):
     status = db.Column(db.String(20), default='pendente')  # pendente, pago, atrasado, adiantado
     multa_juros_atraso = db.Column(db.Float, default=0.0)
     
+    # Relacionamentos
+    faturas = db.relationship('Invoice', backref='parcela', lazy=True)
+    
     def __repr__(self):
         return f'<Installment {self.numero_parcela} - Loan {self.emprestimo_id}>'
     

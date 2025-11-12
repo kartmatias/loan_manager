@@ -1,3 +1,5 @@
+"""Flask application entry point for the Loan Manager API."""
+
 import os
 import sys
 # DON'T CHANGE THIS !!!
@@ -5,17 +7,20 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from flask import Flask, send_from_directory
 from flask_cors import CORS
-from flask_migrate import Migrate
 from src.models.user import db
-from src.models.client import Client
-from src.models.loan import Loan
-from src.models.installment import Installment
-from src.models.invoice import Invoice
+from src.models.client import Client  # noqa: F401
+from src.models.loan import Loan  # noqa: F401
+from src.models.installment import Installment  # noqa: F401
+from src.models.invoice import Invoice  # noqa: F401
 from src.routes.user import user_bp
 from src.routes.client import client_bp
 from src.routes.loan import loan_bp
 from src.routes.installment import installment_bp
 from src.routes.invoice import invoice_bp
+from src.routes.installment_invoice import installment_invoice_bp
+
+# Imported models are referenced to ensure metadata registration for migrations/creation
+_ = (Client, Loan, Installment, Invoice)
 
 app = Flask(__name__, static_folder=os.path.join(os.path.dirname(__file__), 'static'))
 app.config['SECRET_KEY'] = 'asdf#FGSgvasgf$5$WGT'
@@ -28,20 +33,21 @@ app.register_blueprint(client_bp, url_prefix='/api')
 app.register_blueprint(loan_bp, url_prefix='/api')
 app.register_blueprint(installment_bp, url_prefix='/api')
 app.register_blueprint(invoice_bp, url_prefix='/api')
+app.register_blueprint(installment_invoice_bp, url_prefix='/api')
 
 # uncomment if you need to use database
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{os.path.join(os.path.dirname(__file__), 'database', 'app.db')}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db.init_app(app)
-
-migrate = Migrate(app, db)
+with app.app_context():
+    db.create_all()
 
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
     static_folder_path = app.static_folder
     if static_folder_path is None:
-            return "Static folder not configured", 404
+        return "Static folder not configured", 404
 
     if path != "" and os.path.exists(os.path.join(static_folder_path, path)):
         return send_from_directory(static_folder_path, path)

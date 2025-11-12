@@ -126,6 +126,28 @@ export default function Loans({ apiUrl }) {
     }
   }
 
+  const handleGenerateInstallmentInvoice = async (installmentId) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/parcelas/${installmentId}/gerar_fatura`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      })
+
+      if (response.ok) {
+        const fatura = await response.json()
+        alert(`Fatura gerada com sucesso! ID: ${fatura.id.substring(0, 8).toUpperCase()}`)
+        fetchLoanDetails(selectedLoan.id)
+      } else {
+        const error = await response.json()
+        alert(`Erro: ${error.error}`)
+      }
+    } catch (error) {
+      console.error('Erro ao gerar fatura da parcela:', error)
+      alert('Erro ao gerar fatura da parcela')
+    }
+  }
+
   const openModal = () => {
     setFormData({
       cliente_id: '',
@@ -407,16 +429,26 @@ export default function Loans({ apiUrl }) {
                           </p>
                         )}
                       </div>
-                      {installment.status === 'pendente' && (
-                        <Button
-                          onClick={() => handlePayInstallment(installment.id)}
-                          size="sm"
-                          className="ml-4"
-                        >
-                          <CheckCircle className="w-4 h-4 mr-1" />
-                          Pagar
-                        </Button>
-                      )}
+                      <div className="flex gap-2 ml-4">
+                        {installment.status === 'pendente' && (
+                          <>
+                            <Button
+                              onClick={() => handlePayInstallment(installment.id)}
+                              size="sm"
+                            >
+                              <CheckCircle className="w-4 h-4 mr-1" />
+                              Pagar
+                            </Button>
+                            <Button
+                              onClick={() => handleGenerateInstallmentInvoice(installment.id)}
+                              size="sm"
+                              variant="outline"
+                            >
+                              Gerar Fatura
+                            </Button>
+                          </>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>

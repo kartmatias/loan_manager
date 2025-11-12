@@ -140,33 +140,18 @@ export default function Invoices({ apiUrl }) {
 
   const generateInvoicePDF = (invoice) => {
     // Simulação de geração de PDF - em produção, usar uma biblioteca como jsPDF
-    let itensTexto = '';
-    
-    if (invoice.itens_fatura && invoice.itens_fatura.length > 0) {
-      itensTexto = invoice.itens_fatura.map((item, idx) => {
-        if (invoice.parcela_id) {
-          // Fatura de parcela individual
-          return `${idx + 1}. ${item.descricao || 'Parcela ' + item.numero_parcela} - R$ ${(item.valor_original || invoice.valor_total).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-        } else {
-          // Fatura normal
-          return `${idx + 1}. Parcela ${item.numero_parcela} - R$ ${(item.valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
-        }
-      }).join('\n');
-    } else {
-      itensTexto = 'Nenhum item especificado';
-    }
-    
     const content = `
 FATURA #${invoice.id.substring(0, 8).toUpperCase()}
-${invoice.parcela_id ? '(Fatura de Parcela Individual)' : ''}
 
-Cliente: ${getClientName(invoice.cliente_id)}
+Cliente: ${invoice.cliente?.nome || getClientName(invoice.cliente_id)}
 Data de Emissão: ${new Date(invoice.data_emissao).toLocaleDateString('pt-BR')}
 Data de Vencimento: ${new Date(invoice.data_vencimento).toLocaleDateString('pt-BR')}
 Status: ${invoice.status.toUpperCase()}
 
 ITENS:
-${itensTexto}
+${invoice.itens_fatura.map((item, idx) => 
+  `${idx + 1}. Parcela ${item.numero_parcela} - R$ ${item.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`
+).join('\n')}
 
 VALOR TOTAL: R$ ${invoice.valor_total.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
     `.trim()
@@ -326,7 +311,7 @@ VALOR TOTAL: R$ ${invoice.valor_total.toLocaleString('pt-BR', { minimumFractionD
             <div className="flex justify-between items-center p-6 border-b">
               <div>
                 <h2 className="text-xl font-bold">Fatura #{selectedInvoice.id.substring(0, 8).toUpperCase()}</h2>
-                <p className="text-sm text-gray-600">{getClientName(selectedInvoice.cliente_id)}</p>
+                <p className="text-sm text-gray-600">{selectedInvoice.cliente?.nome || getClientName(selectedInvoice.cliente_id)}</p>
               </div>
               <button onClick={() => setShowDetailsModal(false)} className="text-gray-500 hover:text-gray-700">
                 <X className="w-6 h-6" />
@@ -355,34 +340,7 @@ VALOR TOTAL: R$ ${invoice.valor_total.toLocaleString('pt-BR', { minimumFractionD
                 </div>
               </div>
 
-              {selectedInvoice.parcela_id ? (
-                <div>
-                  <h3 className="text-lg font-semibold mb-4">Detalhes da Parcela</h3>
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                    <p className="text-sm text-blue-800 mb-2">
-                      <strong>Tipo:</strong> Fatura de Parcela Individual
-                    </p>
-                    {selectedInvoice.itens_fatura && selectedInvoice.itens_fatura.length > 0 && selectedInvoice.itens_fatura.map((item, index) => (
-                      <div key={index} className="space-y-1">
-                        <p className="text-sm text-gray-700">
-                          <strong>Parcela:</strong> {item.numero_parcela}
-                        </p>
-                        <p className="text-sm text-gray-700">
-                          <strong>Descrição:</strong> {item.descricao || 'Pagamento de parcela'}
-                        </p>
-                        <p className="text-sm text-gray-700">
-                          <strong>Valor Original:</strong> R$ {(item.valor_original || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                        </p>
-                        {item.multa_juros_atraso > 0 && (
-                          <p className="text-sm text-red-600">
-                            <strong>Multa/Juros:</strong> R$ {item.multa_juros_atraso.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
-                          </p>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : selectedInvoice.itens_fatura && selectedInvoice.itens_fatura.length > 0 ? (
+              {selectedInvoice.itens_fatura && selectedInvoice.itens_fatura.length > 0 && (
                 <div>
                   <h3 className="text-lg font-semibold mb-4">Itens da Fatura</h3>
                   <div className="space-y-2">
@@ -391,17 +349,17 @@ VALOR TOTAL: R$ ${invoice.valor_total.toLocaleString('pt-BR', { minimumFractionD
                         <div>
                           <p className="font-medium">Parcela {item.numero_parcela}</p>
                           <p className="text-sm text-gray-600">
-                            Vencimento: {new Date(item.data_vencimento).toLocaleDateString('pt-BR')}
+                            Vencimento: {new Date(item.vencimento).toLocaleDateString('pt-BR')}
                           </p>
                         </div>
                         <p className="font-semibold">
-                          R$ {(item.valor || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                          R$ {item.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                         </p>
                       </div>
                     ))}
                   </div>
                 </div>
-              ) : null}
+              )}
 
               <div className="flex gap-3 pt-4 border-t">
                 <Button
